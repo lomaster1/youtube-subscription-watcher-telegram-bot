@@ -1,0 +1,14 @@
+{
+    "telegramApiKey": "YOUR_KEY",
+    "webHookUrl": "https://NAME.localtunnel.me",
+    "publicCert": "/path/to/certs/public.pem",
+    "webHookSecretPath": "SOME_PATH",
+    "googleClientId": "YOUR_CLIENT_ID",
+    "googleClientSecret": "YOUR_CLIENT_SECRET",
+    "googleSharedApiKeys": [
+        "YOUR_SHARED_KEY1",
+        "YOUR_SHARED_KEY2"
+    ],
+    "mongodb": "mongodb://localhost:27017/coll",
+    "authStateSecret": "SECRET"
+}

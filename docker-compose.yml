@@ -1,0 +1,41 @@
+version: '2'
+services:
+  haproxy:
+    image: dockercloud/haproxy:1.6.2
+    links:
+      - bot
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/certs/cert0.pem:/certs/cert0.pem
+    environment: 
+      - "CERT_FOLDER=/certs/"
+      - "EXTRA_GLOBAL_SETTINGS=tune.ssl.default-dh-param 2048"
+      - "RSYSLOG_DESTINATION=logsX.papertrailapp.com:PORT"
+      - "LOGSPOUT=ignore"
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+  bot:
+    build: .
+    command: node /var/www/index.js
+    environment: 
+      - "FORCE_SSL=yes"
+    links:
+      - db
+    expose:
+      - "3000"
+    restart: always
+  db:
+    image: mongo
+    volumes:
+      - ~/bot/db:/data/db
+    expose:
+      - "27017"
+    restart: always
+  logger:
+    image: gliderlabs/logspout:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: 'syslog+tls://logsX.papertrailapp.com:PORT'
+    restart: always

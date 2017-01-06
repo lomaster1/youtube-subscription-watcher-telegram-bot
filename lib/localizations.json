@@ -1,0 +1,94 @@
+{
+    "START_MESSAGE": {
+        "ru": "Привет! Я умею уведомлять о новых видео в твоих подписках на YouTube. А еще просмотр можно будет отложить и я напомню тебе позже.",
+        "en": "Hi! I can notify you about new video in your YouTube subscription. Video can be deferred, and I'll remind you about it later."
+    },
+    "AUTH_LINK_TITLE": {
+        "ru": "Для входа в YouTube перейди по этой ссылке",
+        "en": "Click this link to sign in YouTube"
+    },
+    "AUTH_TOKEN_SUCCESS": {
+        "ru": "Отлично, теперь я могу получить твои подписки на YouTube",
+        "en": "Great! Now I can get your YouTube subscriptions"
+    },
+    "PLEASE_CLOSE_WINDOW": {
+        "ru": "Можно закрыть это окно, если оно не закрылось автоматически",
+        "en": "Please close this window if it does not close automatically"
+    },
+    "NO_SUBSCRIPTIONS": {
+        "ru": "У вас нет подписок",
+        "en": "You have no subscriptions"
+    },
+    "ERROR": {
+        "ru": "Ошибка",
+        "en": "Error"
+    },
+    "USERS_COUNT": {
+        "ru": "Пользователей",
+        "en": "Users"
+    },
+    "CHANNELS_COUNT": {
+        "ru": "Каналов",
+        "en": "Channels"
+    },
+    "REMINDERS_COUNT": {
+        "ru": "Уведомлений",
+        "en": "Reminders"
+    },
+    "REMIND_CREATE_SUCCESS": {
+        "ru": "Ок, я напомню $[1]",
+        "en": "Ok, i remind $[1]"
+    },
+    "WRONG_REMINDER_VALUE": {
+        "ru": "Неправильное значение напоминания",
+        "en": "Wrong reminder value"
+    },
+    "REMINDER_REMOVE_SUCCESS": {
+        "ru": "Напоминание удалено",
+        "en": "Reminder removed"
+    },
+    "REMIND": {
+        "ru": "Напомнить",
+        "en": "Remind"
+    },
+    "REMIND_ABOUT": {
+        "ru": "Напоминаю о",
+        "en": "Remind about"
+    },
+    "DO_NOT_REMIND_ME": {
+        "ru": "Не напоминать",
+        "en": "Do not remind me"
+    },
+    "TODAY_EVENING_AT": {
+        "ru": "Вечером в $[1]",
+        "en": "Evening at $[1]"
+    },
+    "TOMORROW_MORNING_AT": {
+        "ru": "Завтра в $[1]",
+        "en": "Tomorrow at $[1]"
+    },
+    "ASK_TIMEZONE": {
+        "ru": "Чтобы уведомления приходили вовремя скажи мне свой часовой пояс. Например, +3 или -3:30",
+        "en": "Tell me your timezone for notifications. For example +3 or -3:30"
+    },
+    "CHANGE_TIMEZONE_SUCCESS": {
+        "ru": "Хорошо. Получается у тебя сейчас $[1]",
+        "en": "Okey. You are now $[1]"
+    },
+    "ASK_CHANGE_LANGUAGE": {
+        "ru": "Выбери язык",
+        "en": "Choose language"
+    },
+    "CHANGE_LANGUAGE_SUCCESS": {
+        "ru": "Язык сохранен",
+        "en": "Language saved"
+    },
+    "REMINDER_ABOUT": {
+        "ru": "Напоминание $[1] о $[2]",
+        "en": "Reminder $[1] about $[2]"
+    },
+    "NO_REMINDERS": {
+        "ru": "У вас нет напоминаний",
+        "en": "You have no reminders"
+    }
+}
