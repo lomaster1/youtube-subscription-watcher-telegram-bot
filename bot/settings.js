@@ -22,6 +22,7 @@ Settings.prototype = {
                     })
                     .catch(err => {
                         console.log(`User settings middleware error: ${err}`);
+                        ctx.state.userSettings = new models.UserSettings();
                         return next();
                     })
             } else {

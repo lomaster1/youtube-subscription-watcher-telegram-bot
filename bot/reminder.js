@@ -77,17 +77,20 @@ Reminder.prototype = {
         return models.UserReminder.find({ userId: userId })
             .then(reminders => {
                 if (reminders.length > 0) {
-                    var promises = reminders.map(reminder => {
+                    let p = Promise.resolve();
+                    reminders.forEach(reminder => {
                         const videoId = reminder.videoId;
                         const reminderAsStr = moment(reminder.remind).utcOffset(tz).locale(lang).calendar().toLowerCase();
                         const message = L(lang, 'REMINDER_ABOUT', reminderAsStr, `https://www.youtube.com/watch?v=${videoId}`);
-                        return ctx.reply(message, Extra.markup(
-                            Markup.inlineKeyboard([
-                                Markup.callbackButton(L(lang, 'DO_NOT_REMIND_ME'), `removeRemind|${videoId}`)
-                            ])
-                        ))
+                        p = p.then(() => {
+                            return ctx.reply(message, Extra.markup(
+                                Markup.inlineKeyboard([
+                                    Markup.callbackButton(L(lang, 'DO_NOT_REMIND_ME'), `removeRemind|${videoId}`)
+                                ])
+                            ))
+                        })
                     });
-                    return Promise.all(promises);
+                    return p;
                 } else {
                     return ctx.reply(L(lang, 'NO_REMINDERS'));
                 }
@@ -104,8 +107,11 @@ Reminder.prototype = {
             .then(reminders => this._remindAll(reminders));
     },
     _remindAll(reminders) {
-        let promises = reminders.map((reminder) => this._remind(reminder));
-        return Promise.all(promises);
+        let p = Promise.resolve();
+        reminders.forEach((reminder) => {
+            p = p.then(() => this._remind(reminder));
+        });
+        return p;
     },
     _remind(reminder) {
         const userId = reminder.userId;

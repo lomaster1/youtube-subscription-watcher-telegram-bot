@@ -28,10 +28,13 @@ SubscriptionsUpdater.prototype = {
         console.log('updateAllUserSubscriptions');
         return models.UserToken.find()
             .then(userTokens => {
-                let promises = userTokens.map(userToken => {
-                    return this.updateUserSubscriptions(userToken);
+                let p = Promise.resolve();
+
+                userTokens.forEach(userToken => {
+                    p = p.then(() => this.updateUserSubscriptions(userToken));
                 });
-                return Promise.all(promises);
+
+                return p;
             });
     },
     updateUserSubscriptions(userToken) {
@@ -42,25 +45,33 @@ SubscriptionsUpdater.prototype = {
 
         // Сначала всё удалим, потом получим подписки заново.
         return models.UserSubscription.remove({ userId: userId })
-            .then(() => this.getUserSubscriptions(tokens))
+            .then(() => this.getUserSubscriptions(userId, tokens))
             .then((data) => {
+                console.log(`${userId} subs count ${data.items.length}`);
 
-                let promises = data.items.map((item) => {
-                    let channelId = item.snippet.resourceId.channelId;
-                    let sub = new models.UserSubscription({
-                        userId: userId,
-                        chatId: chatId,
-                        channelId: channelId,
-                        channelTitle: item.snippet.title
+                let p = Promise.resolve();
+
+                data.items.forEach(item => {
+                    p = p.then(() => {
+                        let channelId = item.snippet.resourceId.channelId;
+                        let sub = new models.UserSubscription({
+                            userId: userId,
+                            chatId: chatId,
+                            channelId: channelId,
+                            channelTitle: item.snippet.title
+                        });
+                        sub.save();
+                        return this.createChannelUpdateInfo(channelId);
                     });
-                    sub.save();
-                    return this.createChannelUpdateInfo(channelId);
                 });
-                return Promise.all(promises);
 
+                return p;
+            }).catch((err) => {
+                console.log(`updateUserSubscriptions ${userId} error: ${err}`);
+                return;
             });
     },
-    getUserSubscriptions(tokens) {
+    getUserSubscriptions(userId, tokens) {
         //TODO: Перенести в класс youtube
         return new Promise((resolve, reject) => {
 
@@ -71,7 +82,7 @@ SubscriptionsUpdater.prototype = {
                 "maxResults": 50
             }, (err, data) => {
                 if (err) {
-                    console.log(`subscriptions.list error: ${err}`);
+                    console.log(`subscriptions.list error for user ${userId}: ${err}`);
                     reject(err);
                 } else {
                     resolve(data);
@@ -90,7 +101,9 @@ SubscriptionsUpdater.prototype = {
                         channelId: channelId
                     });
                     newChannelUpdateInfo.save();
+                    console.log('new ChannelUpdateInfo ' + channelId);
                 }
+                console.log(`ChannelUpdateInfo ${channelId} last update: ${channelUpdateInfo.lastUpdate}`);
                 return Promise.resolve();
             });
     },
@@ -111,10 +124,11 @@ SubscriptionsUpdater.prototype = {
         console.log('checkAllChannelsNewVideo');
         return models.UserSubscription.distinct('channelId')
             .then((channelIds) => {
-                let promises = channelIds.map(channelId => {
-                    return this.checkChannelNewVideo(channelId);
+                let p = Promise.resolve();
+                channelIds.forEach(channelId => {
+                    p = p.then(() => this.checkChannelNewVideo(channelId));
                 });
-                return Promise.all(promises);
+                return p;
             });
     },
     checkChannelNewVideo(channelId) {
@@ -129,10 +143,11 @@ SubscriptionsUpdater.prototype = {
             .then((params) => this.getNewVideos(params))
             .then(data => {
 
-                let promises = data.items.reverse().map((video) => {
-                    return this.notifyUsers(channelId, video);
+                let p = Promise.resolve();
+                data.items.reverse().forEach((video) => {
+                    p = p.then(() => this.notifyUsers(channelId, video));
                 });
-                return Promise.all(promises);
+                return p;
 
             }).then(() => {
                 return models.ChannelUpdateInfo.findOneAndUpdate({
@@ -140,6 +155,9 @@ SubscriptionsUpdater.prototype = {
                 }, {
                         lastUpdate: new Date(Date.now())
                     });
+            }).catch((err) => {
+                console.log(`checkChannelNewVideo ${channelId} error: ${err}`);
+                return;
             });
     },
     getNewVideos(params) {
@@ -171,14 +189,15 @@ SubscriptionsUpdater.prototype = {
 
         return models.UserSubscription.find({ channelId: channelId })
             .then((userSubscriptions) => {
-                let promises = userSubscriptions.map(userSubscription => {
-                    return this._bot.settings.getLanguage(userSubscription.userId)
+                let p = Promise.resolve();
+                userSubscriptions.forEach(userSubscription => {
+                    p = p.then(() => this._bot.settings.getLanguage(userSubscription.userId))
                         .then(lang => {
                             return this.notifyUser(userSubscription.userId,
                                 userSubscription.chatId, videoId, videoTitle, lang);
                         });
                 });
-                return Promise.all(promises);
+                return p;
             });
     },
     notifyUser(userId, chatId, videoId, videoTitle, lang) {
