@@ -103,7 +103,6 @@ SubscriptionsUpdater.prototype = {
                     newChannelUpdateInfo.save();
                     console.log('new ChannelUpdateInfo ' + channelId);
                 }
-                console.log(`ChannelUpdateInfo ${channelId} last update: ${channelUpdateInfo.lastUpdate}`);
                 return Promise.resolve();
             });
     },
