@@ -43,9 +43,11 @@ SubscriptionsUpdater.prototype = {
         const tokens = userToken.tokens.toJSON();
         console.log('updateUserSubscriptions ' + userId);
 
-        // Сначала всё удалим, потом получим подписки заново.
-        return models.UserSubscription.remove({ userId: userId })
-            .then(() => this.getUserSubscriptions(userId, tokens))
+        return this.getUserSubscriptions(userId, tokens)
+            .then((data) => {
+                return models.UserSubscription.remove({ userId: userId })
+                    .then(() => data);
+            })
             .then((data) => {
                 console.log(`${userId} subs count ${data.items.length}`);
 
